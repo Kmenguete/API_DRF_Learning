@@ -1,18 +1,35 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from shop.models import Category, Product, Article
 
 
-class CategorySerializer(ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name', 'date_created', 'date_updated']
+class ProductSerializer(serializers.ModelSerializer):
 
+    articles = serializers.SerializerMethodField()
 
-class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'category', 'date_created', 'date_updated']
+        fields = ['id', 'name', 'category', 'date_created', 'date_updated', 'articles']
+
+    def get_articles(self, instance):
+        queryset = instance.articles.filter(active=True)
+        serializer = ArticleSerializer(queryset, many=True)
+        return serializer.data
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'date_created', 'date_updated', 'products']
+
+    def get_products(self, instance):
+        queryset = instance.products.filter(active=True)
+        serializer = ProductSerializer(queryset, many=True)
+        return serializer.data
 
 
 class ArticleSerializer(ModelSerializer):
