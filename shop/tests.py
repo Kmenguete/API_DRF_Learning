@@ -24,15 +24,15 @@ class TestCategory(APITestCase):
         # We check that the status code is 200
         # and the returned values are the expected ones
         self.assertEqual(response.status_code, 200)
-        excepted = [
+        expected = [
             {
-                'id': category.pk,
+                'id': category.id,
                 'name': category.name,
                 'date_created': self.format_datetime(category.date_created),
                 'date_updated': self.format_datetime(category.date_updated),
             }
         ]
-        self.assertEqual(excepted, response.json())
+        self.assertEqual(expected, response.json())
 
     def test_create(self):
         # We check that no category exists before attempting to create one
