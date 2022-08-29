@@ -17,7 +17,7 @@ class MultipleSerializerMixin:
         return super().get_serializer_class()
 
 
-class CategoryViewSet(ReadOnlyModelViewSet):
+class CategoryViewSet(MultipleSerializerMixin, ReadOnlyModelViewSet):
 
     serializer_class = CategoryListSerializer
     detail_serializer_class = CategoryDetailSerializer
@@ -36,7 +36,7 @@ class CategoryViewSet(ReadOnlyModelViewSet):
         return Response()
 
 
-class ProductViewSet(ReadOnlyModelViewSet):
+class ProductViewSet(MultipleSerializerMixin, ReadOnlyModelViewSet):
 
     serializer_class = ProductListSerializer
     detail_serializer_class = ProductDetailSerializer
