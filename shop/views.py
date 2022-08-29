@@ -17,6 +17,14 @@ class MultipleSerializerMixin:
         return super().get_serializer_class()
 
 
+class AdminArticleViewSet(MultipleSerializerMixin, ModelViewSet):
+
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        return Article.objects.all()
+
+
 class AdminCategoryViewSet(MultipleSerializerMixin, ModelViewSet):
 
     serializer_class = CategoryListSerializer
