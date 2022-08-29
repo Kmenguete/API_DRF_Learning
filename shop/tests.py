@@ -50,7 +50,6 @@ class ShopAPITestCase(APITestCase):
                 'name': category.name,
                 'date_created': self.format_datetime(category.date_created),
                 'date_updated': self.format_datetime(category.date_updated),
-                'products': self.get_product_list_data(category.products.filter(active=True))
             } for category in categories
         ]
 
@@ -69,6 +68,33 @@ class TestCategory(ShopAPITestCase):
         response = self.client.post(self.url, data={'name': 'Nouvelle catégorie'})
         self.assertEqual(response.status_code, 405)
         self.assertEqual(Category.objects.count(), category_count)
+
+    def test_detail(self):
+        # Nous utilisons l'url de détail
+        url_detail = reverse('category-detail', kwargs={'pk': self.category.pk})
+        response = self.client.get(url_detail)
+        # Nous vérifions également le status code de retour ainsi que les données reçues
+        self.assertEqual(response.status_code, 200)
+        excepted = {
+            'id': self.category.pk,
+            'name': self.category.name,
+            'date_created': self.format_datetime(self.category.date_created),
+            'date_updated': self.format_datetime(self.category.date_updated),
+            'products': self.get_product_detail_data(self.category.products.filter(active=True)),
+        }
+        self.assertEqual(excepted, response.json())
+
+    def get_product_detail_data(self, products):
+        return [
+            {
+                'id': product.id,
+                'name': product.name,
+                'category': product.category,
+                'date_created': product.date_created,
+                'date_updated': product.date_updated,
+                'articles': product.articles
+            } for product in products
+        ]
 
 
 class TestProduct(ShopAPITestCase):
